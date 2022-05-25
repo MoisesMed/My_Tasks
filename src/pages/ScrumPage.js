@@ -158,13 +158,13 @@ export default function ScrumPage() {
                                                                                      xs={2}>
                                                                                     <StyledImgsDiv>
 
-                                                                                        <StyledImgs
-                                                                                            onClick={() => handleChangeStatus("left",item,columnId)}
-                                                                                            src={Arrow_Left}/>
+                                                                                        {columnId != 1 && <StyledImgs
+                                                                                            onClick={() => handleChangeStatus("left", item, columnId)}
+                                                                                            src={Arrow_Left}/>}
 
-                                                                                        <StyledImgs
+                                                                                       {columnId != 3 && <StyledImgs
                                                                                             onClick={() => handleChangeStatus("right",item,columnId)}
-                                                                                            src={Arrow}/>
+                                                                                            src={Arrow}/>}
                                                                                         <StyledImgs
                                                                                             src={Trash}/>
                                                                                     </StyledImgsDiv>
