@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import Plus from "../assets/plus.svg"
 import Arrow_Left from "../assets/arrow_left.svg"

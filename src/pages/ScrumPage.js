@@ -1,26 +1,24 @@
 import React, {useEffect, useState} from "react";
 import {Col, Container, Form, Row} from "react-bootstrap";
 import {
-    DefaultButton,
-    NewTaskButton, StyledBody, StyledCircle, StyledDroppable, StyledFlex, StyledFlexButtons, StyledHeader,
+    NewTaskButton, StyledBody, StyledCircle, StyledDroppable, StyledFlex, StyledHeader,
     StyledImgs,
     StyledImgsDiv,
     StyledItemTask, StyledNewTask,
     StyledRow, StyledSpanTitle, StyledTable,
-    StyledTaskTitle,
-    To_Do
+    StyledTaskTitle
 } from "../styledComponents/Table";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import uuid from "uuid/v4";
 import Arrow from "../assets/arrow.svg";
 import Trash from "../assets/trash.svg";
 import Plus from "../assets/plus.svg";
 import Arrow_Left from "../assets/arrow_left.svg";
-import {tasks} from "../App";
-import DraggableComponent from "../styledComponents/DraggableComponent";
+import TaskModal from "../styledComponents/TaskModal";
 
-export default function ScrumPage() {
+export default function ScrumPage({tasks, setTasks}) {
     const [columns, setColumns] = useState([]);
+    const [modalShow, setModalShow] = React.useState(false);
+    const [columnSelected,setColumnSelected] = useState()
 
     const onDragEnd = (result, columns, setColumns) => {
         if (!result.destination) return;
@@ -31,10 +29,8 @@ export default function ScrumPage() {
             const destColumn = columns[destination.droppableId];
             const sourceItems = [...sourceColumn.items];
             const destItems = [...destColumn.items];
-            console.log("dest ===>", destItems)
             const [removed] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, removed);
-            console.log(destItems)
             destItems.map(item => item.status = destination.droppableId)
             setColumns({
                 ...columns,
@@ -61,7 +57,7 @@ export default function ScrumPage() {
             });
         }
     };
-    console.log(columns)
+
     const handleTasks = () => {
         let todoTask = tasks.filter((item) => item.status == 1)
         let doingTask = tasks.filter((item) => item.status == 2)
@@ -85,20 +81,29 @@ export default function ScrumPage() {
         }
     }
 
-    const handleChangeStatus = (type,item,column) => {
+    const handleChangeStatus = (type, item, column) => {
         let id = parseInt(column);
-        if(type === "left"){
+        if (type === "left") {
             item.status = id - 1
-        }else{
+        } else {
             item.status = id + 1
         }
-        console.log(item)
         handleTasks()
     }
 
+    const handleDelete = (id) => {
+        const newTasks = tasks.filter((item) => id !== item.id)
+        setTasks(newTasks)
+    }
+
+    const openModal = (id) => {
+        setModalShow(true)
+       setColumnSelected(id)
+    }
+console.log(columnSelected)
     useEffect(() => {
         handleTasks()
-    }, []);
+    }, [tasks]);
 
 
     return (
@@ -115,7 +120,8 @@ export default function ScrumPage() {
                                             <StyledCircle/>
                                             <StyledSpanTitle>{column.name}</StyledSpanTitle>
                                         </StyledFlex>
-                                        <NewTaskButton><img src={Plus} alt={"plus"}/>New task</NewTaskButton>
+                                        <NewTaskButton onClick={() => openModal(columnId)}><img src={Plus} alt={"plus"}/>New task</NewTaskButton>
+                                        <TaskModal show={modalShow} onHide={() => setModalShow(false)} columnSelected={columnSelected}/>
                                     </StyledHeader>
                                     <StyledBody>
 
@@ -162,10 +168,11 @@ export default function ScrumPage() {
                                                                                             onClick={() => handleChangeStatus("left", item, columnId)}
                                                                                             src={Arrow_Left}/>}
 
-                                                                                       {columnId != 3 && <StyledImgs
-                                                                                            onClick={() => handleChangeStatus("right",item,columnId)}
+                                                                                        {columnId != 3 && <StyledImgs
+                                                                                            onClick={() => handleChangeStatus("right", item, columnId)}
                                                                                             src={Arrow}/>}
                                                                                         <StyledImgs
+                                                                                            onClick={() => handleDelete(item.id)}
                                                                                             src={Trash}/>
                                                                                     </StyledImgsDiv>
                                                                                 </Col>

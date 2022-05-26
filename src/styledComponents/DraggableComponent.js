@@ -7,9 +7,6 @@ import {Draggable} from "react-beautiful-dnd";
 import React, {useEffect, useState} from "react";
 
 export default function DraggableComponent({item, index}) {
-
-    // console.log(data, "teste")
-
     return (
         <Draggable
             key={item.id}

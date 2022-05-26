@@ -3,7 +3,12 @@
 }
 
 :root {
+    --brand-primary-color: #BBBBF8;
     --brand-background-color:#F7EEFF;
     --brand-gray-color:#949494;
     --brand-black-color:#636363;
+}
+
+.modal-backdrop{
+    opacity:0.2 !important;
 }
