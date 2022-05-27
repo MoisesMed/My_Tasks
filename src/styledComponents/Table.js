@@ -170,7 +170,6 @@ export const StyledDroppable = styled.div`
 `
 
 export function To_Do({data, handleChangeStatus}) {
-
     return (
         <StyledTable>
             <StyledHeader>
