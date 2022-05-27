@@ -109,7 +109,7 @@ console.log(columnSelected)
     return (
         <Container fluid>
             <Row>
-                <Row className={"justify-content-center mt-4"}>My Tasks</Row>
+                <Row className={"justify-content-center mt-4"}>My Tasks.</Row>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([columnId, column], index) => {
                         return (
