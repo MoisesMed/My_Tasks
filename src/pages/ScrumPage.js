@@ -172,7 +172,7 @@ export default function ScrumPage({tasks, setTasks}) {
                                                                 }}
                                                             </Draggable>
                                                         )}
-                                                        <StyledNewTask onClick={() => openModal(columnId)}><img src={Plus} alt={"plus"}/> Adicionar Tarefa</StyledNewTask>
+                                                        <StyledNewTask onClick={() => openModal(columnId)}><img src={Plus} alt={"plus"}/>New task</StyledNewTask>
                                                         {provided.placeholder}
                                                     </StyledDroppable>
                                                 );
