@@ -100,7 +100,7 @@ export default function ScrumPage({tasks, setTasks}) {
         setModalShow(true)
        setColumnSelected(id)
     }
-console.log(columnSelected)
+
     useEffect(() => {
         handleTasks()
     }, [tasks]);
@@ -108,8 +108,9 @@ console.log(columnSelected)
 
     return (
         <Container fluid>
+                    <TaskModal show={modalShow} onHide={() => setModalShow(false)} columnSelected={columnSelected}/>
             <Row>
-                <Row className={"justify-content-center mt-4"}>My Tasks .</Row>
+                <Row className={"justify-content-center mt-4"}>My Tasks</Row>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([columnId, column], index) => {
                         return (
@@ -121,7 +122,6 @@ console.log(columnSelected)
                                             <StyledSpanTitle>{column.name}</StyledSpanTitle>
                                         </StyledFlex>
                                         <NewTaskButton onClick={() => openModal(columnId)}><img src={Plus} alt={"plus"}/>New task</NewTaskButton>
-                                        <TaskModal show={modalShow} onHide={() => setModalShow(false)} columnSelected={columnSelected}/>
                                     </StyledHeader>
                                     <StyledBody>
 
@@ -141,34 +141,24 @@ console.log(columnSelected)
                                                                 {(provided, snapshot) => {
                                                                     return (
                                                                         <StyledItemTask
+                                                                            onClick={() => openModal({nome:"moises",senha:"teste"}) }
                                                                             index={index}
                                                                             ref={provided.innerRef}
                                                                             {...provided.draggableProps}
                                                                             {...provided.dragHandleProps}>
                                                                             <StyledRow>
-                                                                                <Col
-                                                                                    className={"text-center p-0"}
-                                                                                    xs={1}>
-                                                                                    <Form>
-                                                                                        <Form.Check
-                                                                                            type={"radio"}
-                                                                                            id={item.id}
-                                                                                        />
-                                                                                    </Form>
-                                                                                </Col>
-                                                                                <Col xs={9}>
+                                                                                <Col xs={10}>
                                                                                     <StyledTaskTitle
                                                                                         title={item.title}>{item.title} </StyledTaskTitle>
                                                                                 </Col>
                                                                                 <Col className={"p-0"}
                                                                                      xs={2}>
                                                                                     <StyledImgsDiv>
-
-                                                                                        {columnId != 1 && <StyledImgs
+                                                                                        {columnId !== "1" && <StyledImgs
                                                                                             onClick={() => handleChangeStatus("left", item, columnId)}
                                                                                             src={Arrow_Left}/>}
 
-                                                                                        {columnId != 3 && <StyledImgs
+                                                                                        {columnId !== "3" && <StyledImgs
                                                                                             onClick={() => handleChangeStatus("right", item, columnId)}
                                                                                             src={Arrow}/>}
                                                                                         <StyledImgs
@@ -182,8 +172,7 @@ console.log(columnSelected)
                                                                 }}
                                                             </Draggable>
                                                         )}
-                                                        <StyledNewTask><img src={Plus} alt={"plus"}/> Adicionar
-                                                            Tarefa</StyledNewTask>
+                                                        <StyledNewTask onClick={() => openModal(columnId)}><img src={Plus} alt={"plus"}/> Adicionar Tarefa</StyledNewTask>
                                                         {provided.placeholder}
                                                     </StyledDroppable>
                                                 );
