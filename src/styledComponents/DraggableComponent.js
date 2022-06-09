@@ -1,59 +1,79 @@
-import {StyledImgs, StyledImgsDiv, StyledItemTask, StyledRow, StyledTaskTitle} from "./Table";
-import {Col, Form} from "react-bootstrap";
+import {
+  StyledImgs,
+  StyledImgsDiv,
+  StyledItemTask,
+  StyledRow,
+  StyledTaskTitle,
+} from "./Table";
+import { Col, Form } from "react-bootstrap";
 import Arrow_Left from "../assets/arrow_left.svg";
 import Arrow from "../assets/arrow.svg";
 import Trash from "../assets/trash.svg";
-import {Draggable} from "react-beautiful-dnd";
-import React, {useEffect, useState} from "react";
+import { Draggable } from "react-beautiful-dnd";
+import React, { useEffect, useState } from "react";
 
-export default function DraggableComponent({item, index}) {
-    return (
-        <Draggable
-            key={item.id}
-            draggableId={item.id}
-            index={index}>
-            {(provided, snapshot) => {
-                return (
-                    <StyledItemTask
-                        index={index}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                    >
-                        <StyledRow isDragging={snapshot.isDragging}>
-                            <Col
-                                className={"text-center p-0"}
-                                xs={1}>
-                                <Form>
-                                    <Form.Check
-                                        type={"radio"}
-                                        id={item.id}
-                                    />
-                                </Form>
-                            </Col>
-                            <Col xs={9}>
-                                <StyledTaskTitle
-                                    title={item.title}>{item.title} </StyledTaskTitle>
-                            </Col>
-                            <Col className={"p-0"}
-                                 xs={2}>
-                                <StyledImgsDiv>
+export default function DraggableComponent({
+  setItemSelected,
+  item,
+  index,
+  openModal,
+  columnId,
+  handleChangeStatus,
+  handleDelete,
+}) {
 
-                                    <StyledImgs
-                                        // onClick={() => handleChangeStatus(provided)}
-                                        src={Arrow_Left}/>
+  const handleModal = () => {
+    setItemSelected(item)
+    openModal(columnId)
+  }
 
-                                    <StyledImgs
-                                        // onClick={() => handleChangeStatus(indexCol + 1, item)}
-                                        src={Arrow}/>
-                                    <StyledImgs
-                                        src={Trash}/>
-                                </StyledImgsDiv>
-                            </Col>
-                        </StyledRow>
-                    </StyledItemTask>
-                );
-            }}
-        </Draggable>
-    )
+  useEffect(() => {
+    setItemSelected({});
+  }, []);
+
+  return (
+    <Draggable key={item.id} draggableId={item.id} index={index}>
+      {(provided, snapshot) => {
+        return (
+          <StyledItemTask
+            index={index}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <StyledRow>
+              <Col xs={10} onClick={() => handleModal()}>
+                <StyledTaskTitle title={item.title}>
+                  {item.title}{" "}
+                </StyledTaskTitle>
+              </Col>
+              <Col className={"p-0"} xs={2}>
+                <StyledImgsDiv>
+                  {columnId !== "1" && (
+                    <StyledImgs
+                      onClick={() => handleChangeStatus("left", item, columnId)}
+                      src={Arrow_Left}
+                    />
+                  )}
+
+                  {columnId !== "3" && (
+                    <StyledImgs
+                      onClick={() =>
+                        handleChangeStatus("right", item, columnId)
+                      }
+                      src={Arrow}
+                    />
+                  )}
+                  <StyledImgs
+                    onClick={() => handleDelete(item.id)}
+                    src={Trash}
+                  />
+                </StyledImgsDiv>
+              </Col>
+            </StyledRow>
+          </StyledItemTask>
+        );
+      }}
+    </Draggable>
+  );
 }

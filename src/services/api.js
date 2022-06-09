@@ -1,14 +1,14 @@
 import axios from 'axios';
-import {API_URL} from "./env";
 import { getUser } from '../util/auth';
+import {API_URL} from "./env";
 
-// const user = getUser();
+const user = getUser()
 
-// axios.defaults.baseURL = API_URL
+axios.defaults.baseURL = API_URL
 
 export const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: API_URL,
     headers: {
-        // 'Authorization': `Bearer ${user.token}`
+        'Authorization': `Bearer ${user.token}`
     }
 });

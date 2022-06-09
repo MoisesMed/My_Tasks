@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import homeBackground from "../assets/homeBackground.svg"
 import {useHistory, useLocation} from "react-router-dom";
 import { api } from "../services/api";
-import { saveUser } from "../util/auth";
+import { isAuthenticated, saveUser } from "../util/auth";
 import { useNavigate } from "react-router-dom";
 
 const StyledModal = styled.div`
@@ -20,11 +20,18 @@ export default function Home() {
         try {
             const response = await api.post('/auth/login', data);
             saveUser({ token: response.data.token });
+            window.location.reload()
             navigate('/tasks')
         } catch (erro) {
             console.error(erro);
         }
     };
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate('/tasks')
+        }
+    }, []);
 
     return (
         <Container fluid>

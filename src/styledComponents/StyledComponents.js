@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Form } from "react-bootstrap";
 
 export const StyledCreateButton = styled.div`
   cursor: pointer;
@@ -40,6 +41,13 @@ export const StyledTextarea = styled.textarea`
   box-shadow: 0 4px 4px 2px #EFE7F5;
   border-radius: 8px;
   margin: 0 0 8px 0;
+`
+
+export const StyledSelect = styled(Form.Select)`
+ border: 1px solid #BABAFF;
+  box-shadow: 0 4px 4px 2px #EFE7F5;
+  border-radius: 8px;
+  margin-bottom:8px;
 `
 
 export const StyledSmallSpan = styled.span`
