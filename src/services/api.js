@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { getUser } from '../util/auth';
-import {API_URL} from "./env";
+
+const API_URL = "https://my-tasks-back-livia.herokuapp.com"
 
 const user = getUser()
 
-axios.defaults.baseURL = API_URL
+axios.defaults.baseURL = "API_URL"
 
 export const api = axios.create({
     baseURL: API_URL,
