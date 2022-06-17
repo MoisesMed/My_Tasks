@@ -119,9 +119,14 @@ export default function ScrumPage() {
     handleTasks();
   };
 
-  const handleDelete = (id) => {
-    const newTasks = tasks.filter((item) => id !== item.id);
-    setTasks(newTasks);
+  const handleDelete = async (id) => {
+    try {
+      const newTasks = tasks.filter((item) => id !== item.id);
+      setTasks(newTasks);
+      const response = await api.delete(`/task/delete/${id}`);
+    } catch (erro) {
+      console.error(erro);
+    }
   };
 
   const openModal = (id) => {
