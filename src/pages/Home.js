@@ -15,9 +15,12 @@ export default function Home() {
     const [password, setPassword] = useState();
     let navigate = useNavigate();
 
-    const handleLogin = async () => {
-        const data = { email: "br.moises@hotmail.com", password: "teste" };
+    const loginMoises = { email: "br.moises@hotmail.com", password: "teste" };
+    const loginLivia = { email: "liviamrodrigueslmr@gmail.com", password: "Limaria!" };
+
+    const handleLogin = async (who) => {
         try {
+            let data = who === "moises"?loginMoises:loginLivia;
             const response = await api.post('/auth/login', data);
             saveUser({ token: response.data.token });
             window.location.reload()
@@ -37,7 +40,7 @@ export default function Home() {
         <Container fluid>
             <Row>
                 <Col xs={8}><img src={homeBackground} /></Col>
-                <Col xs={4}><button onClick={() => handleLogin()}>Logar</button></Col>
+                <Col xs={4}><button onClick={() => handleLogin("moises")}>Logar Moisés</button> <button onClick={() => handleLogin("livia")}>Logar Lívia</button></Col>
             </Row>
         </Container>
     );
