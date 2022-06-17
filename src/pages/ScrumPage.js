@@ -75,8 +75,10 @@ export default function ScrumPage() {
     try {
       const response = await api.get("/task/");
       const responseRefined = response.data.map((item) => {
-        item.id = item._id;
-        return item;
+          item.id = item._id
+          delete item._id
+          delete item.__v
+          return item;
       });
       setTasks(responseRefined);
     } catch (erro) {

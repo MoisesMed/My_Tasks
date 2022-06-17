@@ -14,6 +14,7 @@ import {
 import DatePicker from "react-datepicker";
 import { api } from "../services/api";
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-toastify";
 
 const StyledModal = styled(Modal)`
   .modal-content {
@@ -60,26 +61,30 @@ const StyledModal = styled(Modal)`
 
 export default function TaskModal(props) {
   const [due, setDue] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [date,setDate] = useState()
   const [data, setData] = useState({});
 
   const handleCreateTask = async () => {
     try {
+      setIsLoading(true);
       const response = await api.post("/task/create", data);
       props.init();
       props.onHide();
-    } catch (erro) {
-      console.error(erro);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     setDue(false);
-    if(props.itemSelected){
-      setData(props.itemSelected)
-    }else{
-      setData({status:props.columnSelected});
-    }
-  }, [props]); 
+    setData({
+      status: props.columnSelected,
+      due_date:props.itemSelected.due_date?props.itemSelected.due_date:new Date()
+    });
+  }, [props]);
 
   return (
     <StyledModal
@@ -97,14 +102,16 @@ export default function TaskModal(props) {
           <StyledSmallSpan>Task name</StyledSmallSpan>
           <StyledInput
             value={data.title}
-            // defaultValue={props.itemSelected.title}
+            disabled={isLoading}
+            defaultValue={props.itemSelected.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
             name={"title"}
           />
           <StyledSmallSpan>Task description</StyledSmallSpan>
           <StyledTextarea
             value={data.description}
-            // defaultValue={props.itemSelected.description}
+            disabled={isLoading}
+            defaultValue={props.itemSelected.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
             name={"description"}
           />
@@ -112,7 +119,8 @@ export default function TaskModal(props) {
           <StyledSelect
             onChange={(e) => setData({ ...data, status: e.target.value })}
             value={data.status}
-            // defaultValue={props.columnSelected}
+            disabled={isLoading}
+            defaultValue={props.columnSelected}
             name={"status"}
             aria-label="Default select example"
           >
@@ -120,9 +128,10 @@ export default function TaskModal(props) {
             <option value="2">Doing</option>
             <option value="3">Done</option>
           </StyledSelect>
-          <Form>
+          { !props.itemSelected.due_date?<Form>
             <Form.Check
               checked={due}
+              disabled={isLoading}
               onChange={(e) => setDue(e.target.checked)}
               type="switch"
               id="disabled-custom-switch"
@@ -130,17 +139,16 @@ export default function TaskModal(props) {
             <StyledSmallSpan onClick={() => setDue(!due)}>
               Add due date
             </StyledSmallSpan>
-          </Form>
+          </Form>:null}
         </div>
         <div>
-          {due && (
+          {due || props.itemSelected.due_date?
             <DatePicker
-            // defaultValue={props.itemSelected.due_date}
-            selected={props.itemSelected.due_date && new Date(props.itemSelected.due_date)}
-            inline
-              onChange={(date) => console.log( date )}
-            />
-          )}
+              selected={new Date(data.due_date)}
+              inline
+              onChange={(date) => setData({ ...data, due_date: date })}
+            /> : null
+          }
         </div>
       </Modal.Body>
       <Modal.Footer>

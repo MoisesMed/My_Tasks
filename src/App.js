@@ -5,6 +5,8 @@ import "./styles.css"
 import React, { useState } from "react";
 import MainRoutes from './Routes';
 import { BrowserRouter as Router } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const StyledLayout = styled.div`
   display: flex;
@@ -21,6 +23,7 @@ function App() {
       <StyledLayout>
         <MainRoutes />
       </StyledLayout>
+      <ToastContainer/>
     </Router>
   );
 }
