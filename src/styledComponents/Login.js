@@ -40,11 +40,9 @@ export default function Login({ change }) {
     } catch (error) {
       toast.error(error.response.data.msg);
     } finally {
+      window.location.reload()
       setIsLoading(false);
-      if (isAuthenticated()) {
-        window.location.reload()
-        navigate('/tasks')
-    }
+      navigate('/tasks')
     }
   };
 
