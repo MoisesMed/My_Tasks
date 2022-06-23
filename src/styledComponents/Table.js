@@ -164,7 +164,6 @@ export const StyledDroppable = styled.div`
   background-color: ${({isDraggingOver}) => isDraggingOver ? "#F0F0F0" : "transparent"};
   border-radius:8px;
   //padding: 4px 0;
-  text-align: -webkit-center;
   height: 100%;
   min-height: 100%;
   max-height: 100%;

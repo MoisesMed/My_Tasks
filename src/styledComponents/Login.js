@@ -35,7 +35,7 @@ export default function Login({ change }) {
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("https://my-tasks-back-livia.herokuapp.com/auth/login", data);
+      const response = await api.post("/login", data);
       saveUser({ token: response.data.token });
     } catch (error) {
       toast.error(error.response.data.msg);
