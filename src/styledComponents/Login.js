@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import Loading from "./Loading";
 import { Suspense } from "react";
+import { toast } from "react-toastify";
 
 const StyledLoginDiv = styled.div`
   display: flex;
@@ -36,8 +37,8 @@ export default function Login({ change }) {
       setIsLoading(true);
       const response = await axios.post("https://my-tasks-back-livia.herokuapp.com/auth/login", data);
       saveUser({ token: response.data.token });
-    } catch (erro) {
-      console.error(erro);
+    } catch (error) {
+      toast.error(error.response.data.msg);
     } finally {
       setIsLoading(false);
       if (isAuthenticated()) {

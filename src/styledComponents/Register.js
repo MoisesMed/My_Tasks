@@ -81,7 +81,7 @@ export default function Register({change}) {
         />
       </div>
       <StyledCreateButton fit mid onClick={() => handleRegister()}>
-        Login
+        Register
       </StyledCreateButton>
       <StyledSpan mid gray>
         Already have account?
