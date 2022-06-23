@@ -11,9 +11,8 @@ import {
   StyledTitle,
   StyledSelect,
 } from "./StyledComponents";
-import DatePicker from "react-datepicker";
+import DatePicker from "sassy-datepicker";
 import { api } from "../services/api";
-import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 
 const StyledModal = styled(Modal)`
@@ -34,7 +33,6 @@ const StyledModal = styled(Modal)`
   }
 
   .modal-body {
-    /* gap: 16px; */
     display: flex;
 
     .form-check-input {
@@ -62,17 +60,22 @@ const StyledModal = styled(Modal)`
 export default function TaskModal(props) {
   const [due, setDue] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [date,setDate] = useState()
+  const [date, setDate] = useState();
   const [data, setData] = useState({});
 
   const handleCreateTask = async () => {
     try {
       setIsLoading(true);
-      const response = await api.post("/task/create", data);
+      if(props.itemSelected.id){
+        const response = await api.patch(`/task/update/${props.itemSelected.id}`, data);
+      }else{
+        const response = await api.post("/task/create", data);
+      }
       props.init();
       props.onHide();
+      toast.success("Tarefa criada com sucesso !!!");
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.error);
     } finally {
       setIsLoading(false);
     }
@@ -80,10 +83,16 @@ export default function TaskModal(props) {
 
   useEffect(() => {
     setDue(false);
-    setData({
-      status: props.columnSelected,
-      due_date:props.itemSelected.due_date?props.itemSelected.due_date:new Date()
-    });
+    if (props.itemSelected.due_date) {
+      setData({
+        status: props.columnSelected,
+        due_date: props.itemSelected.due_date,
+      });
+    } else {
+      setData({
+        status: props.columnSelected,
+      });
+    }
   }, [props]);
 
   return (
@@ -128,27 +137,29 @@ export default function TaskModal(props) {
             <option value="2">Doing</option>
             <option value="3">Done</option>
           </StyledSelect>
-          { !props.itemSelected.due_date?<Form>
-            <Form.Check
-              checked={due}
-              disabled={isLoading}
-              onChange={(e) => setDue(e.target.checked)}
-              type="switch"
-              id="disabled-custom-switch"
-            />
-            <StyledSmallSpan onClick={() => setDue(!due)}>
-              Add due date
-            </StyledSmallSpan>
-          </Form>:null}
+          {!props.itemSelected.due_date ? (
+            <Form>
+              <Form.Check
+                checked={due}
+                disabled={isLoading}
+                onChange={(e) => setDue(e.target.checked)}
+                type="switch"
+                id="disabled-custom-switch"
+              />
+              <StyledSmallSpan onClick={() => setDue(!due)}>
+                Add due date
+              </StyledSmallSpan>
+            </Form>
+          ) : null}
         </div>
         <div>
-          {due || props.itemSelected.due_date?
+          {due || props.itemSelected.due_date ? (
             <DatePicker
-              selected={new Date(data.due_date)}
+              selected={props.itemSelected.due_date?new Date(props.itemSelected.due_date):new Date()}
               inline
               onChange={(date) => setData({ ...data, due_date: date })}
-            /> : null
-          }
+            />
+          ) : null}
         </div>
       </Modal.Body>
       <Modal.Footer>

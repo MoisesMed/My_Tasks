@@ -13,10 +13,6 @@ export function isAuthenticated() {
 export function getUser() {
     let token = localStorage.getItem('@auth/token');
 
-    // if (!token) {
-    //     throw new Error('Not found user');
-    // }
-
     return {token};
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import {
   NewTaskButton,
   StyledBody,
@@ -7,24 +7,19 @@ import {
   StyledDroppable,
   StyledFlex,
   StyledHeader,
-  StyledImgs,
-  StyledImgsDiv,
-  StyledItemTask,
   StyledNewTask,
-  StyledRow,
   StyledSpanTitle,
   StyledTable,
-  StyledTaskTitle,
 } from "../styledComponents/Table";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import Arrow from "../assets/arrow.svg";
-import Trash from "../assets/trash.svg";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Plus from "../assets/plus.svg";
-import Arrow_Left from "../assets/arrow_left.svg";
 import TaskModal from "../styledComponents/TaskModal";
 import { getUser, logout } from "../util/auth";
-import { api } from "../services/api";
+import { api, user } from "../services/api";
 import DraggableComponent from "../styledComponents/DraggableComponent";
+import { Suspense } from "react";
+import Loading from "../styledComponents/Loading";
+import { StyledTitle } from "../styledComponents/StyledComponents";
 
 export default function ScrumPage() {
   const [columns, setColumns] = useState([]);
@@ -32,11 +27,11 @@ export default function ScrumPage() {
   const [columnSelected, setColumnSelected] = useState();
   const [tasks, setTasks] = useState([]);
   const [itemSelected, setItemSelected] = useState({});
+  const [isLoading,setIsLoading] = useState(false)
 
   const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) return;
     const { source, destination } = result;
-
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
@@ -56,6 +51,9 @@ export default function ScrumPage() {
           items: destItems,
         },
       });
+      const changeStatus = api.patch(`/task/update/${removed.id}`, {
+        status: destItems[0].status,
+      });
     } else {
       const column = columns[source.droppableId];
       const copiedItems = [...column.items];
@@ -68,21 +66,27 @@ export default function ScrumPage() {
           items: copiedItems,
         },
       });
+      const changeStatus = api.patch(`/task/update/${removed.id}`, {
+        status: removed.status,
+      });
     }
   };
 
   const initiTasks = async () => {
     try {
+      setIsLoading(true)
       const response = await api.get("/task/");
       const responseRefined = response.data.map((item) => {
-          item.id = item._id
-          delete item._id
-          delete item.__v
-          return item;
+        item.id = item._id;
+        delete item._id;
+        delete item.__v;
+        return item;
       });
       setTasks(responseRefined);
     } catch (erro) {
       console.error(erro);
+    }finally{
+      setIsLoading(false)
     }
   };
 
@@ -113,8 +117,14 @@ export default function ScrumPage() {
     let id = parseInt(column);
     if (type === "left") {
       item.status = id - 1;
+      const changeStatus = api.patch(`/task/update/${item.id}`, {
+        status: id - 1,
+      });
     } else {
       item.status = id + 1;
+      const changeStatus = api.patch(`/task/update/${item.id}`, {
+        status: id + 1,
+      });
     }
     handleTasks();
   };
@@ -157,13 +167,13 @@ export default function ScrumPage() {
         itemSelected={itemSelected}
       />
       <Row>
-        <Row className={"justify-content-center mt-4"} onClick={() => logout()}>
-          My Tasks
+        <Row className={"mt-4 m-0"} onClick={() => logout()}>
+          <StyledTitle mid>My Tasks</StyledTitle>
         </Row>
         <DragDropContext
           onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
-          {Object.entries(columns).map(([columnId, column], index) => {
+          >
+          {isLoading?<Loading/>: Object.entries(columns).map(([columnId, column], index) => {
             return (
               <Col xl={4} xs={12} key={columnId}>
                 <StyledTable>
@@ -172,7 +182,7 @@ export default function ScrumPage() {
                       <StyledCircle />
                       <StyledSpanTitle>{column.name}</StyledSpanTitle>
                     </StyledFlex>
-                    <NewTaskButton onClick={() => openModal(columnId,null)}>
+                    <NewTaskButton onClick={() => openModal(columnId, null)}>
                       <img src={Plus} alt={"plus"} />
                       New task
                     </NewTaskButton>
@@ -180,23 +190,23 @@ export default function ScrumPage() {
                   <StyledBody>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(provided, snapshot) => {
-                        return (
+                         return (
                           <StyledDroppable
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            isDraggingOver={snapshot.isDraggingOver}
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          isDraggingOver={snapshot.isDraggingOver}
                           >
                             {column.items.map((item, index) => (
                               <DraggableComponent
                               setItemSelected={setItemSelected}
-                                item={item}
-                                index={index}
-                                openModal={openModal}
-                                columnId={columnId}
-                                handleChangeStatus={handleChangeStatus}
-                                handleDelete={handleDelete}
+                              item={item}
+                              index={index}
+                              openModal={openModal}
+                              columnId={columnId}
+                              handleChangeStatus={handleChangeStatus}
+                              handleDelete={handleDelete}
                               />
-                            ))}
+                              ))}
                             <StyledNewTask onClick={() => openModal(columnId)}>
                               <img src={Plus} alt={"plus"} />
                               New task
@@ -207,12 +217,6 @@ export default function ScrumPage() {
                       }}
                     </Droppable>
                   </StyledBody>
-                  {/*<StyledHeader>*/}
-                  {/*    <StyledFlexButtons>*/}
-                  {/*        <DefaultButton>Excluir</DefaultButton>*/}
-                  {/*        <DefaultButton>Concluído</DefaultButton>*/}
-                  {/*    </StyledFlexButtons>*/}
-                  {/*</StyledHeader>*/}
                 </StyledTable>
               </Col>
             );

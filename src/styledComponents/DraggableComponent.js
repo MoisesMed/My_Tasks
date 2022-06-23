@@ -5,12 +5,12 @@ import {
   StyledRow,
   StyledTaskTitle,
 } from "./Table";
-import { Col, Form } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import Arrow_Left from "../assets/arrow_left.svg";
 import Arrow from "../assets/arrow.svg";
 import Trash from "../assets/trash.svg";
 import { Draggable } from "react-beautiful-dnd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 export default function DraggableComponent({
   setItemSelected,

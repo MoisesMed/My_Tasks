@@ -1,8 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ScrumPage from "./pages/ScrumPage";
 import styled from "styled-components";
 import "./styles.css"
-import React, { useState } from "react";
+import React from "react";
 import MainRoutes from './Routes';
 import { BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
