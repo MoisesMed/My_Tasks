@@ -36,6 +36,8 @@ export const StyledCancelButton = styled(DefultButton)`
   border-radius: 16px;
   background-color: #ffffff;
   min-width: 100px;
+  ${(props) => props.fit?'width: fit-content': 'width: 100%'};
+  ${(props) => props.mid?'align-self: center': 'align-self: flex-start'};
 `;
 
 export const StyledInput = styled.input`
