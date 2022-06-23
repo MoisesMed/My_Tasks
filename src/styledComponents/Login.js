@@ -35,14 +35,14 @@ export default function Login({ change }) {
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      const response = await api.post("/login", data);
+      const response = await api.post("auth/login", data);
       saveUser({ token: response.data.token });
+      window.location.reload()
+      navigate('/tasks')
     } catch (error) {
       toast.error(error.response.data.msg);
     } finally {
-      window.location.reload()
       setIsLoading(false);
-      navigate('/tasks')
     }
   };
 
