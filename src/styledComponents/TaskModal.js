@@ -66,16 +66,19 @@ export default function TaskModal(props) {
   const handleCreateTask = async () => {
     try {
       setIsLoading(true);
-      if(props.itemSelected.id){
-        const response = await api.patch(`/task/update/${props.itemSelected.id}`, data);
-      }else{
+      if (props.itemSelected.id) {
+        const response = await api.patch(
+          `/task/update/${props.itemSelected.id}`,
+          data
+        );
+      } else {
         const response = await api.post("/task/create", data);
       }
       props.init();
       props.onHide();
       toast.success("Tarefa criada com sucesso !!!");
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.msg);
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +158,11 @@ export default function TaskModal(props) {
         <div>
           {due || props.itemSelected.due_date ? (
             <DatePicker
-              selected={props.itemSelected.due_date?new Date(props.itemSelected.due_date):new Date()}
+              selected={
+                props.itemSelected.due_date
+                  ? new Date(props.itemSelected.due_date)
+                  : new Date()
+              }
               inline
               onChange={(date) => setData({ ...data, due_date: date })}
             />
@@ -164,7 +171,9 @@ export default function TaskModal(props) {
       </Modal.Body>
       <Modal.Footer>
         <StyledCreateButton onClick={props.onHide}>Cancel</StyledCreateButton>
-        <StyledCancelButton onClick={handleCreateTask}>Save</StyledCancelButton>
+        <StyledCancelButton disabled={!!!data.title} onClick={handleCreateTask}>
+          Save
+        </StyledCancelButton>
       </Modal.Footer>
     </StyledModal>
   );

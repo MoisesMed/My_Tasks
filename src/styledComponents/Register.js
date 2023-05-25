@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { api } from "../services/api";
-import { saveUser } from "../util/auth";
 import { useNavigate } from "react-router-dom";
 import {
   StyledCreateButton,
@@ -17,15 +16,20 @@ const StyledLoginDiv = styled.div`
   display: flex;
   flex-direction: column;
   background: #fefefe;
-  box-shadow:rgb(205 196 212) 4px 4px 6px 4px;
+  box-shadow: rgb(205 196 212) 4px 4px 6px 4px;
   border-radius: 30px;
   padding: 20px 40px;
   gap: 12px;
   margin: 0 20px;
 `;
 
-export default function Register({change}) {
-  const [data, setData] = useState({ name: "", email: "", password: "",confirmpassword:" " });
+export default function Register({ change }) {
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmpassword: " ",
+  });
   const [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
 
@@ -34,7 +38,7 @@ export default function Register({change}) {
       setIsLoading(true);
       const response = await api.post("/auth/register", data);
       toast.success(response.data.msg);
-      change()
+      change();
     } catch (error) {
       toast.error(error.response.data.msg);
     } finally {
@@ -77,7 +81,9 @@ export default function Register({change}) {
         <StyledLoginInput
           type="password"
           value={data.confirmpassword}
-          onChange={(e) =>  setData({ ...data, confirmpassword: e.target.value })}
+          onChange={(e) =>
+            setData({ ...data, confirmpassword: e.target.value })
+          }
         />
       </div>
       <StyledCreateButton fit mid onClick={() => handleRegister()}>

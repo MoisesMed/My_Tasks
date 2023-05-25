@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { useState } from "react";
 import { api } from "../services/api";
-import { getUser, isAuthenticated, saveUser } from "../util/auth";
+import { saveUser } from "../util/auth";
 import { useNavigate } from "react-router-dom";
 import {
   StyledCreateButton,
@@ -11,9 +11,6 @@ import {
   StyledSpan,
   StyledTitle,
 } from "./StyledComponents";
-import axios from "axios";
-import Loading from "./Loading";
-import { Suspense } from "react";
 import { toast } from "react-toastify";
 
 const StyledLoginDiv = styled.div`
@@ -32,13 +29,18 @@ export default function Login({ change }) {
   const [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
   const handleLogin = async () => {
     try {
       setIsLoading(true);
       const response = await api.post("auth/login", data);
       saveUser({ token: response.data.token });
-      window.location.reload()
-      navigate('/tasks')
+      window.location.reload();
+      navigate("/tasks");
     } catch (error) {
       toast.error(error.response.data.msg);
     } finally {
@@ -55,22 +57,29 @@ export default function Login({ change }) {
       <div>
         <StyledSmallSpan>Email</StyledSmallSpan>
         <StyledLoginInput
-        disabled={isLoading}
+          disabled={isLoading}
           type="email"
           value={data.email}
+          onKeyPress={handleKeyPress}
           onChange={(e) => setData({ ...data, email: e.target.value })}
-          />
+        />
       </div>
       <div>
         <StyledSmallSpan>Password</StyledSmallSpan>
         <StyledLoginInput
-        disabled={isLoading}
+          disabled={isLoading}
           type="password"
           value={data.password}
+          onKeyPress={handleKeyPress}
           onChange={(e) => setData({ ...data, password: e.target.value })}
-          />
+        />
       </div>
-      <StyledCreateButton disabled={isLoading} fit mid onClick={() => handleLogin()}>
+      <StyledCreateButton
+        disabled={isLoading}
+        fit
+        mid
+        onClick={() => handleLogin()}
+      >
         Login
       </StyledCreateButton>
       <StyledSpan mid gray>
