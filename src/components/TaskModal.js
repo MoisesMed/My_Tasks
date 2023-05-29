@@ -60,7 +60,6 @@ const StyledModal = styled(Modal)`
 export default function TaskModal(props) {
   const [due, setDue] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [date, setDate] = useState();
   const [data, setData] = useState({});
 
   const handleCreateTask = async () => {

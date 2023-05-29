@@ -10,16 +10,16 @@ import {
   StyledNewTask,
   StyledSpanTitle,
   StyledTable,
-} from "../styledComponents/Table";
+} from "../components/Table";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Plus from "../assets/plus.svg";
-import TaskModal from "../styledComponents/TaskModal";
-import { getUser, logout } from "../util/auth";
-import { api, user } from "../services/api";
-import DraggableComponent from "../styledComponents/DraggableComponent";
-import { Suspense } from "react";
-import Loading from "../styledComponents/Loading";
-import { StyledTitle } from "../styledComponents/StyledComponents";
+import TaskModal from "../components/TaskModal";
+import { logout } from "../util/auth";
+import { api } from "../services/api";
+import DraggableComponent from "../components/DraggableComponent";
+import Loading from "../components/Loading";
+import { StyledTitle } from "../components/StyledComponents";
+import { toast } from "react-toastify";
 
 export default function ScrumPage() {
   const [columns, setColumns] = useState([]);
@@ -27,7 +27,7 @@ export default function ScrumPage() {
   const [columnSelected, setColumnSelected] = useState();
   const [tasks, setTasks] = useState([]);
   const [itemSelected, setItemSelected] = useState({});
-  const [isLoading,setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) return;
@@ -70,11 +70,12 @@ export default function ScrumPage() {
         status: removed.status,
       });
     }
+    toast.success("Tarefa movida com sucesso.");
   };
 
   const initiTasks = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const response = await api.get("/task/");
       const responseRefined = response.data.map((item) => {
         item.id = item._id;
@@ -85,8 +86,8 @@ export default function ScrumPage() {
       setTasks(responseRefined);
     } catch (erro) {
       console.error(erro);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -126,6 +127,7 @@ export default function ScrumPage() {
         status: id + 1,
       });
     }
+    toast.success("Tarefa movida com sucesso.");
     handleTasks();
   };
 
@@ -134,6 +136,7 @@ export default function ScrumPage() {
       const newTasks = tasks.filter((item) => id !== item.id);
       setTasks(newTasks);
       const response = await api.delete(`/task/delete/${id}`);
+      toast.success("Tarefa deletada com sucesso.");
     } catch (erro) {
       console.error(erro);
     }
@@ -172,55 +175,61 @@ export default function ScrumPage() {
         </Row>
         <DragDropContext
           onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-          >
-          {isLoading?<Loading/>: Object.entries(columns).map(([columnId, column], index) => {
-            return (
-              <Col xl={4} xs={12} key={columnId}>
-                <StyledTable>
-                  <StyledHeader>
-                    <StyledFlex>
-                      <StyledCircle />
-                      <StyledSpanTitle>{column.name}</StyledSpanTitle>
-                    </StyledFlex>
-                    <NewTaskButton onClick={() => openModal(columnId, null)}>
-                      <img src={Plus} alt={"plus"} />
-                      New task
-                    </NewTaskButton>
-                  </StyledHeader>
-                  <StyledBody>
-                    <Droppable droppableId={columnId} key={columnId}>
-                      {(provided, snapshot) => {
-                         return (
-                          <StyledDroppable
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          isDraggingOver={snapshot.isDraggingOver}
-                          >
-                            {column.items.map((item, index) => (
-                              <DraggableComponent
-                              setItemSelected={setItemSelected}
-                              item={item}
-                              index={index}
-                              openModal={openModal}
-                              columnId={columnId}
-                              handleChangeStatus={handleChangeStatus}
-                              handleDelete={handleDelete}
-                              />
+        >
+          {isLoading ? (
+            <Loading />
+          ) : (
+            Object.entries(columns).map(([columnId, column], index) => {
+              return (
+                <Col xl={4} xs={12} key={columnId}>
+                  <StyledTable>
+                    <StyledHeader>
+                      <StyledFlex>
+                        <StyledCircle />
+                        <StyledSpanTitle>{column.name}</StyledSpanTitle>
+                      </StyledFlex>
+                      <NewTaskButton onClick={() => openModal(columnId, null)}>
+                        <img src={Plus} alt={"plus"} />
+                        New task
+                      </NewTaskButton>
+                    </StyledHeader>
+                    <StyledBody>
+                      <Droppable droppableId={columnId} key={columnId}>
+                        {(provided, snapshot) => {
+                          return (
+                            <StyledDroppable
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              isDraggingOver={snapshot.isDraggingOver}
+                            >
+                              {column.items.map((item, index) => (
+                                <DraggableComponent
+                                  setItemSelected={setItemSelected}
+                                  item={item}
+                                  index={index}
+                                  openModal={openModal}
+                                  columnId={columnId}
+                                  handleChangeStatus={handleChangeStatus}
+                                  handleDelete={handleDelete}
+                                />
                               ))}
-                            <StyledNewTask onClick={() => openModal(columnId)}>
-                              <img src={Plus} alt={"plus"} />
-                              New task
-                            </StyledNewTask>
-                            {provided.placeholder}
-                          </StyledDroppable>
-                        );
-                      }}
-                    </Droppable>
-                  </StyledBody>
-                </StyledTable>
-              </Col>
-            );
-          })}
+                              <StyledNewTask
+                                onClick={() => openModal(columnId)}
+                              >
+                                <img src={Plus} alt={"plus"} />
+                                New task
+                              </StyledNewTask>
+                              {provided.placeholder}
+                            </StyledDroppable>
+                          );
+                        }}
+                      </Droppable>
+                    </StyledBody>
+                  </StyledTable>
+                </Col>
+              );
+            })
+          )}
         </DragDropContext>
       </Row>
     </Container>
