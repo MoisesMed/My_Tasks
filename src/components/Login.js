@@ -18,10 +18,11 @@ const StyledLoginDiv = styled.div`
   flex-direction: column;
   background: #fefefe;
   box-shadow: rgb(205 196 212) 4px 4px 6px 4px;
-  border-radius: 30px;
+  border-radius: 16px;
   padding: 20px 40px;
   gap: 12px;
   margin: 0 20px;
+  max-width: 380px;
 `;
 
 export default function Login({ change }) {

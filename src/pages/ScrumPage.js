@@ -161,7 +161,7 @@ export default function ScrumPage() {
   }, []);
 
   return (
-    <Container fluid>
+    <Container style={{ padding: "0px 2%" }} fluid>
       <TaskModal
         init={initiTasks}
         show={modalShow}
@@ -169,19 +169,19 @@ export default function ScrumPage() {
         columnSelected={columnSelected}
         itemSelected={itemSelected}
       />
-      <Row>
-        <Row className={"mt-4 m-0"} onClick={() => logout()}>
-          <StyledTitle mid>My Tasks</StyledTitle>
-        </Row>
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
-          {isLoading ? (
-            <Loading />
-          ) : (
-            Object.entries(columns).map(([columnId, column], index) => {
+      <Row className={"mt-4 m-0"} onClick={() => logout()}>
+        <StyledTitle mid>My Tasks</StyledTitle>
+      </Row>
+      <DragDropContext
+        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+      >
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <Row>
+            {Object.entries(columns).map(([columnId, column], index) => {
               return (
-                <Col xl={4} xs={12} key={columnId}>
+                <Col lg={4} md={12} xs={12} key={columnId}>
                   <StyledTable>
                     <StyledHeader>
                       <StyledFlex>
@@ -228,10 +228,10 @@ export default function ScrumPage() {
                   </StyledTable>
                 </Col>
               );
-            })
-          )}
-        </DragDropContext>
-      </Row>
+            })}
+          </Row>
+        )}
+      </DragDropContext>
     </Container>
   );
 }

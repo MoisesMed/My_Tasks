@@ -8,27 +8,45 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 
 const ColWithImage = styled.div`
-  @media (max-width: 900px) {
-    display: none;
+  @media (max-width: 1024px) {
+    width: 100%;
+    position: absolute;
   }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-height: 95%;
+    background-position: bottom !important;
+  }
+
+  background-position: center !important;
   background-repeat: no-repeat;
-  background-position-x: center;
-  background-position-y: top;
   background-size: contain;
   width: 60%;
   background-image: url(${homeBackground});
   min-height: 100vh;
 `;
+
 const ColWithoutImage = styled.div`
-  @media (max-width: 900px) {
+  @media (max-width: 1024px) {
     width: 100%;
+    z-index: 2;
+    justify-content: flex-end;
+    min-height: 90vh;
   }
-  justify-content: center;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-height: auto;
+    margin-top: 20%;
+  }
+
   width: 40%;
   min-height: 100vh;
   display: flex;
   align-items: center;
 `;
+
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
   let navigate = useNavigate();

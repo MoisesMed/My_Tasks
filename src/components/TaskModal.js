@@ -139,7 +139,7 @@ export default function TaskModal(props) {
             <option value="2">Doing</option>
             <option value="3">Done</option>
           </StyledSelect>
-          {!props.itemSelected.due_date ? (
+          {/* {!props.itemSelected.due_date ? (
             <Form>
               <Form.Check
                 checked={due}
@@ -152,9 +152,9 @@ export default function TaskModal(props) {
                 Add due date
               </StyledSmallSpan>
             </Form>
-          ) : null}
+          ) : null} */}
         </div>
-        <div>
+        {/* <div>
           {due || props.itemSelected.due_date ? (
             <DatePicker
               selected={
@@ -166,7 +166,7 @@ export default function TaskModal(props) {
               onChange={(date) => setData({ ...data, due_date: date })}
             />
           ) : null}
-        </div>
+        </div> */}
       </Modal.Body>
       <Modal.Footer>
         <StyledCreateButton onClick={props.onHide}>Cancel</StyledCreateButton>

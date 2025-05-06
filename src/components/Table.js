@@ -14,9 +14,8 @@ export const StyledTable = styled.div`
   box-shadow: 4px 4px 6px 4px rgba(220, 207, 230, 0.22);
   border-radius: 30px;
   height: 500px;
-  min-width: 300px;
   background: rgba(254, 254, 254, 0.91);
-  margin: 50px 20px;
+  margin: 50px 0px;
 `;
 
 export const StyledHeader = styled.div`
